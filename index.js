@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const fs = require('fs');
 
 // Realizar una clase “ProductManager” que gestione un conjunto de productos.
@@ -20,7 +21,7 @@ class ProductManager {
     };
 
     grabarArchivo() {
-        fs.writeFileSync(this.path, JSON.stringify(this.productos))        
+        fs.writeFileSync(this.path, JSON.stringify(this.productos))
     };
 
     //Para generar "codes" al azar
@@ -84,7 +85,7 @@ class ProductManager {
             return ('');
         } else {
             console.log(`Delete id ${id}`);
-            this.productos.splice(id-1,1)
+            this.productos.splice(id - 1, 1)
             this.grabarArchivo()
             return (encontrado);
         }
@@ -96,18 +97,17 @@ class ProductManager {
         if (verifCode) {
             console.error(`Code ${code} is already in use, CANNOT update with this code.`)
         } else {
-            this.getProductById(id)
-            const producto = {
-                id, title, description, price, thumbnail, code, stock,
+            const aModificar = this.getProductById(id);
+            if (aModificar) {
+                const producto = {
+                    id, title, description, price, thumbnail, code, stock,
+                }
+                const posicion = this.productos.findIndex((producto) => producto.id === id)
+                this.productos[posicion] = producto
+                this.grabarArchivo()
+            } else {
+                console.error(`id ${id} does not exists, CANNOT update with this id.`)
             }
-            console.log('**')
-            console.log(producto)
-            console.log('**')
-            console.log(this.productos)
-            console.log('**')
-            this.productos[id] = producto
-
-            this.grabarArchivo()
         }
     }
 };
@@ -118,7 +118,7 @@ product.setPath('./productos.json');
 
 // Trae lo que haya en el archivo
 console.log('First call to getProducts: ');
-console.log(product.getProducts());
+console.table(product.getProducts());
 console.log('------------------------');
 
 // Agrega un nuevo producto al archivo
@@ -126,7 +126,7 @@ product.addProduct('producto prueba', 'Este es un producto prueba', 200, 'Sin im
 
 // Vuelve a traer todo lo del archivo
 console.log('Second call to getProducts: ');
-console.log(product.getProducts());
+console.table(product.getProducts());
 console.log('------------------------');
 
 // Agrega otro producto al archivo. 
@@ -134,7 +134,7 @@ product.addProduct('segundo producto prueba', 'Este es OTRO producto prueba', 60
 
 // Vuelve a traer todo lo del archivo
 console.log('Third call to getProducts: ');
-console.log(product.getProducts());
+console.table(product.getProducts());
 console.log('------------------------');
 
 // Muestra que no puede agregar pruductos con code repetido
@@ -143,7 +143,7 @@ product.addProduct('producto prueba', 'Este es un producto prueba', 200, 'Sin im
 // Trae el segundo producto
 console.log('************************');
 console.log('call to getProductById 2: ');
-console.log(product.getProductById(2));
+console.table(product.getProductById(2));
 console.log('------------------------');
 
 // Trae un producto inexistente
@@ -158,14 +158,14 @@ console.log('------------------------');
 
 // Vuelve a traer todo lo del archivo para verificar
 console.log('Check with getProducts after delete: ');
-console.log(product.getProducts());
+console.table(product.getProducts());
 console.log('------------------------');
 
 //Modifica los datos del producto con índice 2, si existe.
-product.updateProduct(2,'producto modificado', 'Producto de prueba modificado', 666, 'Imagen?', product.generateCode(), 5.5);
+product.updateProduct(2, 'producto modificado', 'Producto de prueba modificado', 666, 'Imagen?', product.generateCode(), 5.5);
 
 // Vuelve a traer todo lo del archivo para verificar el update
 console.log('Final with getProducts: ');
-console.log(product.getProducts());
+console.table(product.getProducts());
 console.log('------------------------');
 
