@@ -19,6 +19,7 @@ export default class ProductManager {
     };
 
     async grabarArchivo() {
+        console.log('Productos grabados')
         await fs.promises.writeFile(this.path, JSON.stringify(this.productos))
     };
 
@@ -86,13 +87,15 @@ export default class ProductManager {
 
     //Se llamará al método “deleteProduct”, se evaluará que realmente se elimine el producto o que arroje un error en caso de no existir.
     async deleteProduct(id) {
+        await this.getProducts();
         const encontrado = this.productos.find((producto) => producto.id === id);
-        if (encontrado == undefined) {
+        if (encontrado == undefined || encontrado.id !== id) {
             console.log(`Error: id ${id} cannot be found to delete.`);
             return ('');
         } else {
             console.log(`Delete id ${id}`);
-            this.productos.splice(id - 1, 1)
+            const posicion = this.productos.findIndex((producto) => producto.id === id)
+            this.productos.splice(posicion, 1)
             await this.grabarArchivo()
             return (encontrado);
         }
