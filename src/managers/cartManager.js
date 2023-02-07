@@ -2,21 +2,24 @@ import fs from 'fs';
 
 export default class CartManager {
     constructor() {
-        this.cart = []
+        this.carts = []
         this.path = ''
     };
 
     //Al agregarlo, debe crearse con un id autoincrementable
     #generarId() {
         let id = 1
-        if (this.cart.length !== 0) {
-            id = this.cart[this.cart.length - 1].id + 1
+        console.log(this.carts.length)
+        console.log(this.carts)
+        if (this.carts.length !== 0) {
+            console.log(this.carts[this.carts.length - 1])
+            id = this.carts[this.carts.length - 1].id + 1
         }
         return id
     };
 
     async grabarArchivo() {
-        await fs.promises.writeFile(this.path, JSON.stringify(this.cart))
+        await fs.promises.writeFile(this.path, JSON.stringify(this.carts))
     };
 
     //Para poder setear el nombre del archivo desde afuera de la clase
@@ -28,8 +31,8 @@ export default class CartManager {
         if (fs.existsSync(this.path)) {
             const carritos = await fs.promises.readFile(this.path, 'utf-8')
             const carritosJS = JSON.parse(carritos)
-            this.cart = carritosJS
-            return (this.cart)
+            this.carts = carritosJS
+            return (this.carts)
         } else {
             return ('')
         }
@@ -37,7 +40,8 @@ export default class CartManager {
 
     async getCartById(id) {
         await this.getCart();
-        const encontrado = this.cart.find((carrito) => carrito.id === id);
+        console.log(this.carts[id])
+        const encontrado = this.carts.find((carrito) => carrito.id === id);
         if (encontrado == undefined) {
             console.log(`Error: cart id ${id} cannot be found to retrieve.`);
             return ('');
@@ -47,13 +51,17 @@ export default class CartManager {
     };
 
     //
-    async addCart(cid,product) {
+    async addCart(cid, pid) {
         await this.getCartById(cid);
+        const cantidad = this.quantity + 1
+        const producto = pid;
         const carrito = {
             id: this.#generarId(),
-            products: product
-        }
-        this.cart.push(carrito)
+            product: [producto],
+            quantity: cantidad
+        };
+
+        this.carts.push(carrito)
         await this.grabarArchivo()
     }
 
@@ -61,9 +69,10 @@ export default class CartManager {
         await this.getCart();
         const carrito = {
             id: this.#generarId(),
-            products: []
+            products: [],
+            quantity: 0
         }
-        this.cart.push(carrito)
+        this.carts.push(carrito)
         await this.grabarArchivo()
     }
 
