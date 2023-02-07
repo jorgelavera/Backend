@@ -24,6 +24,28 @@ export default class CartManager {
         this.path = nombreArchivo;
     };
 
+    async getCart() {
+        if (fs.existsSync(this.path)) {
+            const carritos = await fs.promises.readFile(this.path, 'utf-8')
+            const carritosJS = JSON.parse(carritos)
+            this.cart = carritosJS
+            return (this.cart)
+        } else {
+            return ('')
+        }
+    };
+
+    async getCartById(id) {
+        await this.getCart();
+        const encontrado = this.cart.find((carrito) => carrito.id === id);
+        if (encontrado == undefined) {
+            console.log(`Error: cart id ${id} cannot be found to retrieve.`);
+            return ('');
+        } else {
+            return ({ encontrado }); // En formato objeto
+        }
+    };
+
     //
     async addCart() {
         const carrito = {

@@ -78,7 +78,7 @@ export default class ProductManager {
         await this.getProducts();
         const encontrado = this.productos.find((producto) => producto.id === id);
         if (encontrado == undefined) {
-            console.log(`Error: id ${id} cannot be found to retrieve.`);
+            console.log(`Error: product id ${id} cannot be found to retrieve.`);
             return ('');
         } else {
             return ({ encontrado }); // En formato objeto
