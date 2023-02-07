@@ -47,11 +47,24 @@ export default class CartManager {
     };
 
     //
-    async addCart() {
+    async addCart(cid,product) {
+        await this.getCartById(cid);
         const carrito = {
             id: this.#generarId(),
+            products: product
         }
         this.cart.push(carrito)
         await this.grabarArchivo()
     }
+
+    async createCart() {
+        await this.getCart();
+        const carrito = {
+            id: this.#generarId(),
+            products: []
+        }
+        this.cart.push(carrito)
+        await this.grabarArchivo()
+    }
+
 };

@@ -34,15 +34,24 @@ productRouter.delete('/:pid', async (req, res) => {
 })
 
 productRouter.post('/', async (req, res) => {
-    let product = req.body;
-    //addProduct(title, description, price, thumbnail, code, stock)
-    //const { pid } = req.params
-    const producto = await product.addProduct(product.title,)
+    let content = req.body;
+    const producto = await product.addProduct(content.title, content.description, content.code, content.price, content.status, content.stock, content.category, content.thumbnails)
     if (producto) {
         res.json({ message: 'Producto agregado', producto })
     } else {
         res.status(400).send('Error ?')
     }
 })
+
+productRouter.put('/', async (req, res) => {
+    let content = req.body;
+    const producto = await product.updateProduct(content.id,content.title, content.description, content.code, content.price, content.status, content.stock, content.category, content.thumbnails)
+    if (producto) {
+        res.json({ message: 'Producto modificado', producto })
+    } else {
+        res.status(400).send('Error ?')
+    }
+})
+
 
 export default productRouter;

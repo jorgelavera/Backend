@@ -55,7 +55,8 @@ export default class ProductManager {
     };
 
     //agrega un producto al arreglo de productos inicial; Valida que no se repita el campo “code” y que todos los campos sean obligatorios
-    async addProduct(title, description, price, thumbnail, code, stock) {
+    async addProduct(title, description, code, price, status, stock, category, thumbnails) {
+        console.log(title)
         const verifCode = this.#evaluarProducto(code)
         if (verifCode) {
             console.error(`Code ${code} is already in use, CANNOT be used again.`)
@@ -63,11 +64,12 @@ export default class ProductManager {
             console.log(`Code ${code} is available, adding ok.`)
             const producto = {
                 id: this.#generarId(),
-                title, description, price, thumbnail, code, stock,
+                title, description, code, price, status, stock, category, thumbnails
             }
             //console.log(producto)
             this.productos.push(producto)
             await this.grabarArchivo()
+            return (producto)
         }
     };
 
@@ -102,7 +104,8 @@ export default class ProductManager {
     }
 
     //Se llamará al método “updateProduct” y se intentará cambiar un campo de algún producto, se evaluará que no se elimine el id y que sí se haya hecho la actualización.
-    async updateProduct(id, title, description, price, thumbnail, code, stock) {
+    async updateProduct(id, title, description, code, price, status, stock, category, thumbnails) {
+        await this.getProducts();
         const verifCode = this.#evaluarProducto(code)
         if (verifCode) {
             console.error(`Code ${code} is already in use, CANNOT update with this code.`)
@@ -110,11 +113,12 @@ export default class ProductManager {
             const aModificar = this.getProductById(id);
             if (aModificar) {
                 const producto = {
-                    id, title, description, price, thumbnail, code, stock,
+                    id, title, description, code, price, status, stock, category, thumbnails,
                 }
                 const posicion = this.productos.findIndex((producto) => producto.id === id)
                 this.productos[posicion] = producto
                 await this.grabarArchivo()
+                return (producto);
             } else {
                 console.error(`id ${id} does not exists, CANNOT update with this id.`)
             }

@@ -1,1 +1,1 @@
-[{"id":2,"title":"producto modificado","description":"Producto de prueba modificado","price":666,"thumbnail":"Imagen?","code":"ABC803","stock":5.5}]
+[{"id":1,"title":"producto de prueba 6","description":"Este es 666","code":"AC641474","price":3040.5,"stock":26},{"id":2,"title":"producto de prueba 1","description":"Este es 111","code":"A11174","price":301.5,"status":true,"stock":26,"category":"prueba"},{"id":3,"title":"producto de prueba 2","description":"Este es 2 producto prueba","code":"2","price":2.5,"stock":1}]
