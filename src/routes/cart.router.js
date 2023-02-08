@@ -21,7 +21,7 @@ cartRouter.post('/', async (req, res) => {
     if (cart) {
         res.json({ message: 'Carrito creado', cart })
     } else {
-        res.status(400).send('Error ?')
+        res.status(400).send('Carrito no creado - ver console Log')
     }
 })
 
@@ -31,7 +31,7 @@ cartRouter.post('/:cid/product/:pid', async (req, res) => {
     if (cart) {
         res.json({ message: 'Producto agregado a Carrito', cart })
     } else {
-        res.status(400).send('Error ?')
+        res.status(400).send('Producto no agregado al carrito - ver console Log')
     }
 })
 

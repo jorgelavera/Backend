@@ -9,10 +9,7 @@ export default class CartManager {
     //Al agregarlo, debe crearse con un id autoincrementable
     #generarId() {
         let id = 1
-        console.log(this.carts.length)
-        console.log(this.carts)
         if (this.carts.length !== 0) {
-            console.log(this.carts[this.carts.length - 1])
             id = this.carts[this.carts.length - 1].id + 1
         }
         return id
@@ -30,9 +27,13 @@ export default class CartManager {
     async getCart() {
         if (fs.existsSync(this.path)) {
             const carritos = await fs.promises.readFile(this.path, 'utf-8')
-            const carritosJS = JSON.parse(carritos)
-            this.carts = carritosJS
-            return (this.carts)
+            if (carritos == '') {
+                return ('')
+            } else {
+                const carritosJS = JSON.parse(carritos)
+                this.carts = carritosJS
+                return (this.carts)
+            }
         } else {
             return ('')
         }
@@ -40,8 +41,7 @@ export default class CartManager {
 
     async getCartById(id) {
         await this.getCart();
-        console.log(this.carts[id])
-        const encontrado = this.carts.find((carrito) => carrito.id === id);
+        const encontrado = this.carts.find((carrito) => carrito.id === Number(id));
         if (encontrado == undefined) {
             console.log(`Error: cart id ${id} cannot be found to retrieve.`);
             return ('');
@@ -50,30 +50,50 @@ export default class CartManager {
         }
     };
 
+    async getIndexFromCart(id) {
+        await this.getCart();
+        const indexno = this.carts.findIndex((carrito) => carrito.id == Number(id));
+        return (indexno);
+    };
+
+    async getIndexFromProduct(productArray, pid) {
+        const indexnoProd = productArray.findIndex((prod) => prod.product == Number(pid));
+        return (indexnoProd);
+    };
+
     //
     async addCart(cid, pid) {
-        await this.getCartById(cid);
-        const cantidad = this.quantity + 1
-        const producto = pid;
-        const carrito = {
-            id: this.#generarId(),
-            product: [producto],
-            quantity: cantidad
+        const currentCart = await this.getCartById(cid);
+        const indexno = await this.getIndexFromCart(cid);
+        if (indexno !== -1) {
+            const indexnoProd = await this.getIndexFromProduct(this.carts[indexno].products, pid);
+            if (indexnoProd !== -1) {
+                // update qty
+                const productArray = this.carts[indexno].products
+                const cantidad = this.carts[indexno].products[indexnoProd].quantity + 1;
+                this.carts[indexno].products[indexnoProd].quantity = cantidad;
+                await this.grabarArchivo()
+            } else {
+                // add
+                if (currentCart == '') {
+                    return ('')
+                } else {
+                    this.carts[indexno].products.push({ product: pid, quantity: 1 });
+                    await this.grabarArchivo()
+                }
+            }
         };
-
-        this.carts.push(carrito)
-        await this.grabarArchivo()
     }
 
     async createCart() {
         await this.getCart();
         const carrito = {
             id: this.#generarId(),
-            products: [],
-            quantity: 0
+            products: []
         }
-        this.carts.push(carrito)
-        await this.grabarArchivo()
+        this.carts.push(carrito);
+        await this.grabarArchivo();
+        return (carrito.id);
     }
 
 };
