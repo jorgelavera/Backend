@@ -1,0 +1,9 @@
+{{#if products.length}}
+    {{#each products}}
+        <p>Producto: {{title}} </p>
+        <p>Precio: {{price}}</p>
+    {{/each}}
+{{else}}
+    <h2>NO HAY PRODUCTOS</h2>
+{{/if}}
+<script src="/socket.io/socket.io.js"></script>
